@@ -6,7 +6,6 @@ plugins {
 group 'com.joe.kafka.connect'
 
 dependencies {
-    runtimeClasspath "io.debezium:debezium-connector-mysql:${debeziumVersion}"
     runtimeClasspath "io.debezium:debezium-connector-postgres:${debeziumVersion}"
     runtimeClasspath "io.confluent:kafka-connect-jdbc:${confluentKafkaConnectJdbcVersion}"
 }

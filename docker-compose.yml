@@ -94,19 +94,11 @@ services:
       CONNECT_PLUGIN_PATH: /usr/share/java,/connect-jars
       CONNECT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
-    volumes:
-      - ./mysql/entrypoint:/docker-entrypoint-initdb.d
-      - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: root
-
   postgres:
-    image: debezium/postgres:13-alpine
+    image: debezium/postgres:14-alpine
     container_name: postgres
+    volumes:
+      - ./postgres/entrypoint/1_init.sql:/docker-entrypoint-initdb.d/1_init.sql
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
