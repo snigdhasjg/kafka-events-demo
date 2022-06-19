@@ -1,2 +1,3 @@
 rootProject.name = 'kafka-events'
+include 'kafka-connect'
 

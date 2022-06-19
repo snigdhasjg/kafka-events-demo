@@ -75,8 +75,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-#    volumes:
-#      - ./data/connect-jars:/connect-jars
+    volumes:
+      - ./kafka-connect/build/libs:/connect-jars
     environment:
       CONNECT_BOOTSTRAP_SERVERS: "kafka:9092"
       CONNECT_REST_PORT: 8083

@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version "${shadowJarVersion}"
+}
+
+group 'com.joe.kafka.connect'
+
+dependencies {
+    runtimeClasspath "io.debezium:debezium-connector-mysql:${debeziumVersion}"
+    runtimeClasspath "io.debezium:debezium-connector-postgres:${debeziumVersion}"
+    runtimeClasspath "io.confluent:kafka-connect-jdbc:${confluentKafkaConnectJdbcVersion}"
+}
+
+shadowJar {
+    archiveFileName = "kafka-connect-all.jar"
+}
+
+jar {
+    enabled = false
+}
+
+build {
+    dependsOn shadowJar
+}
