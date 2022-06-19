@@ -1,0 +1,145 @@
+# https://github.com/confluentinc/demo-scene/blob/master/kafka-connect-zero-to-hero/docker-compose.yml
+# https://github.com/confluentinc/ksql/blob/master/docker-compose.yml
+version: '3.9'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.1.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.1.1
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:0.25.1
+    container_name: ksqldb-server
+    depends_on:
+      - kafka
+    healthcheck:
+      test: ps -eo stat,command | grep java | grep ksql | awk '{print $$1;}' | grep -E '^S(s?)l$$' # two '$' sign needed to ignore one
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    environment:
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_KSQL_ADVERTISED_LISTENER: http://ksqldb-server:8088
+      KSQL_BOOTSTRAP_SERVERS: kafka:9092
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KSQL_KSQL_CONNECT_URL: http://kafka-connect:8083
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+      KSQL_AUTO_OFFSET_RESET: "earliest"
+      KSQL_KSQL_STREAMS_PROCESSING_GUARANTEE: "exactly_once"
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.1.1
+    container_name: schema-registry
+    depends_on:
+      - kafka
+    healthcheck:
+      test: curl -f http://schema-registry:8081
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
+
+  kafka-connect:
+    image: confluentinc/cp-kafka-connect:7.1.1
+    container_name: kafka-connect
+    depends_on:
+      - kafka
+    healthcheck:
+      test: curl -f http://kafka-connect:8083
+      interval: 60s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+#    volumes:
+#      - ./data/connect-jars:/connect-jars
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: "kafka:9092"
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: _connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _connect-status
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
+      CONNECT_LOG4J_APPENDER_STDOUT_LAYOUT_CONVERSIONPATTERN: "[%d] %p %X{connector.context}%m (%c:%L)%n"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_PLUGIN_PATH: /usr/share/java,/connect-jars
+      CONNECT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    volumes:
+      - ./mysql/entrypoint:/docker-entrypoint-initdb.d
+      - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: root
+
+  postgres:
+    image: debezium/postgres:13-alpine
+    container_name: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: root
+
+# Uncomment these if you want to see UI
+#  schema-registry-ui:
+#    image: landoop/schema-registry-ui:0.9.4
+#    container_name: schema-registry-ui
+#    ports:
+#      - "9000:8000"
+#    environment:
+#      SCHEMAREGISTRY_URL: http://schema-registry:8081
+#      PROXY: "true"
+#
+#  kafka-ui:
+#    image: obsidiandynamics/kafdrop:3.29.0
+#    container_name: kafka-ui
+#    restart: "no"
+#    ports:
+#      - "9001:9000"
+#    depends_on:
+#      - kafka
+#      - schema-registry
+#    environment:
+#      KAFKA_BROKERCONNECT: kafka:9092
+#      SCHEMAREGISTRY_CONNECT: http://schema-registry:8081
+#      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+
+networks:
+  default:
+    name: kafka-local-network
+    driver: bridge
+
+volumes:
+  postgres_data:
