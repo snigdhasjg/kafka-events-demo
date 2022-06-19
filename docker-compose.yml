@@ -93,45 +93,48 @@ services:
       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
       CONNECT_PLUGIN_PATH: /usr/share/java,/connect-jars
       CONNECT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_CONFIG_PROVIDERS: env
+      CONNECT_CONFIG_PROVIDERS_ENV_CLASS: com.joe.kafka.connect.providers.EnvVariableProvider
+      hostname: postgres
+      user: postgres
+      password: password
+      dbname: postgres
 
   postgres:
     image: debezium/postgres:14-alpine
     container_name: postgres
     volumes:
       - ./postgres/entrypoint/1_init.sql:/docker-entrypoint-initdb.d/1_init.sql
+    ports:
+      - "5432:5432"
     environment:
-      POSTGRES_USER: root
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: root
 
 # Uncomment these if you want to see UI
-#  schema-registry-ui:
-#    image: landoop/schema-registry-ui:0.9.4
-#    container_name: schema-registry-ui
-#    ports:
-#      - "9000:8000"
-#    environment:
-#      SCHEMAREGISTRY_URL: http://schema-registry:8081
-#      PROXY: "true"
-#
-#  kafka-ui:
-#    image: obsidiandynamics/kafdrop:3.29.0
-#    container_name: kafka-ui
-#    restart: "no"
-#    ports:
-#      - "9001:9000"
-#    depends_on:
-#      - kafka
-#      - schema-registry
-#    environment:
-#      KAFKA_BROKERCONNECT: kafka:9092
-#      SCHEMAREGISTRY_CONNECT: http://schema-registry:8081
-#      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+  schema-registry-ui:
+    image: landoop/schema-registry-ui:0.9.4
+    container_name: schema-registry-ui
+    ports:
+      - "9000:8000"
+    environment:
+      SCHEMAREGISTRY_URL: http://schema-registry:8081
+      PROXY: "true"
+
+  kafka-ui:
+    image: obsidiandynamics/kafdrop:3.29.0
+    container_name: kafka-ui
+    restart: "no"
+    ports:
+      - "9001:9000"
+    depends_on:
+      - kafka
+      - schema-registry
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092
+      SCHEMAREGISTRY_CONNECT: http://schema-registry:8081
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
 
 networks:
   default:
     name: kafka-local-network
     driver: bridge
-
-volumes:
-  postgres_data:
