@@ -3,8 +3,8 @@ CREATE
 SOURCE CONNECTOR POSTGRES_SOURCE_CONNECTOR WITH(
     'connector.class'='io.debezium.connector.postgresql.PostgresConnector',
     'tasks.max'=1,
-    'plugin.name'='wal2json',
-    'slot.name'='wal2json_rds',
+    'plugin.name'='wal2json_rds_streaming',
+    'slot.name'='wal2json_rds_streaming_name',
 
     'database.hostname'='${env:<ignore>:hostname}',
     'database.port'=5432,
@@ -14,7 +14,7 @@ SOURCE CONNECTOR POSTGRES_SOURCE_CONNECTOR WITH(
     'database.server.id'=7,
     'database.server.name'='user',
     'schema.include.list'='public',
-    'snapshot.mode'='always',
+--     'snapshot.mode'='always',
 
     'internal.key.converter'='org.apache.kafka.connect.json.JsonConverter',
     'internal.key.converter.schemas.enable'='false',

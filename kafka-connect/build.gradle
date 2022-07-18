@@ -7,11 +7,12 @@ plugins {
 group 'com.joe.kafka.connect'
 
 dependencies {
+    implementation "io.debezium:debezium-connector-postgres:${debeziumVersion}"
+
     compileOnly "org.apache.kafka:connect-api:${confluentKafkaVersion}"
     compileOnly "org.slf4j:slf4j-api:${slf4jVersion}"
     compileOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
 
-    runtimeClasspath "io.debezium:debezium-connector-postgres:${debeziumVersion}"
     runtimeClasspath "io.confluent:kafka-connect-jdbc:${confluentKafkaConnectJdbcVersion}"
 }
 

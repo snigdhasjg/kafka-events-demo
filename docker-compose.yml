@@ -3,14 +3,14 @@
 version: '3.9'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.1.1
+    image: confluentinc/cp-zookeeper:7.0.1
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: confluentinc/cp-kafka:7.1.1
+    image: confluentinc/cp-kafka:7.0.1
     container_name: kafka
     depends_on:
       - zookeeper
@@ -49,7 +49,7 @@ services:
       KSQL_KSQL_STREAMS_PROCESSING_GUARANTEE: "exactly_once"
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.1.1
+    image: confluentinc/cp-schema-registry:7.0.1
     container_name: schema-registry
     depends_on:
       - kafka
@@ -65,7 +65,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
 
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:7.1.1
+    image: confluentinc/cp-kafka-connect:7.0.1
     container_name: kafka-connect
     depends_on:
       - kafka
@@ -111,28 +111,28 @@ services:
       POSTGRES_PASSWORD: password
 
 # Uncomment these if you want to see UI
-  schema-registry-ui:
-    image: landoop/schema-registry-ui:0.9.4
-    container_name: schema-registry-ui
-    ports:
-      - "9000:8000"
-    environment:
-      SCHEMAREGISTRY_URL: http://schema-registry:8081
-      PROXY: "true"
-
-  kafka-ui:
-    image: obsidiandynamics/kafdrop:3.29.0
-    container_name: kafka-ui
-    restart: "no"
-    ports:
-      - "9001:9000"
-    depends_on:
-      - kafka
-      - schema-registry
-    environment:
-      KAFKA_BROKERCONNECT: kafka:9092
-      SCHEMAREGISTRY_CONNECT: http://schema-registry:8081
-      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+#  schema-registry-ui:
+#    image: landoop/schema-registry-ui:0.9.4
+#    container_name: schema-registry-ui
+#    ports:
+#      - "9000:8000"
+#    environment:
+#      SCHEMAREGISTRY_URL: http://schema-registry:8081
+#      PROXY: "true"
+#
+#  kafka-ui:
+#    image: obsidiandynamics/kafdrop:3.29.0
+#    container_name: kafka-ui
+#    restart: "no"
+#    ports:
+#      - "9001:9000"
+#    depends_on:
+#      - kafka
+#      - schema-registry
+#    environment:
+#      KAFKA_BROKERCONNECT: kafka:9092
+#      SCHEMAREGISTRY_CONNECT: http://schema-registry:8081
+#      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
 
 networks:
   default:
