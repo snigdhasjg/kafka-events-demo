@@ -1,6 +1,5 @@
 -- https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-connector-properties
-CREATE
-SOURCE CONNECTOR POSTGRES_SOURCE_CONNECTOR WITH(
+CREATE SOURCE CONNECTOR POSTGRES_SOURCE_CONNECTOR WITH(
     'connector.class'='io.debezium.connector.postgresql.PostgresConnector',
     'tasks.max'=1,
     'plugin.name'='wal2json_rds_streaming',
@@ -12,7 +11,7 @@ SOURCE CONNECTOR POSTGRES_SOURCE_CONNECTOR WITH(
     'database.password'='${env:<ignore>:password}',
     'database.dbname'='${env:<ignore>:dbname}',
     'database.server.id'=7,
-    'database.server.name'='user',
+    'database.server.name'='source_7',
     'schema.include.list'='public',
 --     'snapshot.mode'='always',
 

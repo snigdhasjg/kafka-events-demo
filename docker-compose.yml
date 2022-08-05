@@ -27,7 +27,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
 
   ksqldb-server:
-    image: confluentinc/ksqldb-server:0.25.1
+    image: confluentinc/ksqldb-server:0.27.1
     container_name: ksqldb-server
     depends_on:
       - kafka
