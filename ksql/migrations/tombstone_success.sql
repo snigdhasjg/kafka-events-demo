@@ -1,3 +1,13 @@
+-- https://rmoff.net/2020/11/03/kafka-connect-ksqldb-and-kafka-tombstone-messages/
+
+drop stream if exists user_detail_final_deleted;
+drop stream if exists user_detail_final delete topic;
+drop stream if exists user_detail_final_stream;
+drop table if exists user_details_pre_final delete topic;
+drop stream if exists user_detail_intermediate_stream;
+drop table if exists user_detail_table delete topic;
+drop stream if exists user_detail_stream;
+
 CREATE STREAM user_detail_stream (
     rowkey       STRUCT<id BIGINT> key,
     username     VARCHAR(STRING),
@@ -66,12 +76,4 @@ SELECT
     CAST(NULL AS VARCHAR)
 FROM user_detail_final_stream
 WHERE is_deleted=true;
-
-drop stream user_detail_final_deleted;
-drop stream user_detail_final delete topic;
-drop stream user_detail_final_stream;
-drop table user_details_pre_final delete topic;
-drop stream user_detail_intermediate_stream;
-drop table user_detail_table delete topic;
-drop stream user_detail_stream;
 

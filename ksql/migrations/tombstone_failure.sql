@@ -1,3 +1,8 @@
+drop stream if exists user_detail_final delete topic;
+drop stream if exists user_detail_intermediate_stream;
+drop table if exists user_detail_table delete topic;
+drop stream if exists user_detail_stream;
+
 CREATE STREAM user_detail_stream (
     rowkey       STRUCT<id BIGINT> key,
     username     VARCHAR(STRING),
@@ -42,6 +47,3 @@ SELECT
 FROM user_detail_intermediate_stream
 GROUP BY username
 HAVING LATEST_BY_OFFSET(is_deleted, false)=false;
-
-CREATE TABLE test AS
-SELECT * FROM user_details_final;
