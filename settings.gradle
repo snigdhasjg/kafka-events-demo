@@ -1,3 +1,4 @@
 rootProject.name = 'kafka-events'
 include 'kafka-connect'
+include 'java-consumer-producer'
 
