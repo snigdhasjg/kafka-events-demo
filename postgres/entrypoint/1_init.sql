@@ -1,3 +1,5 @@
+CREATE SCHEMA master;
+
 CREATE OR REPLACE FUNCTION trigger_set_updated_at()
     RETURNS TRIGGER AS
 $$

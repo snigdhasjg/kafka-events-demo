@@ -8,6 +8,7 @@ group 'com.joe.kafka.connect'
 
 dependencies {
     implementation "io.debezium:debezium-connector-postgres:${debeziumVersion}"
+    implementation "io.debezium:debezium-connector-mysql:${debeziumVersion}"
 
     compileOnly "org.apache.kafka:connect-api:${confluentKafkaVersion}"
     compileOnly "org.slf4j:slf4j-api:${slf4jVersion}"

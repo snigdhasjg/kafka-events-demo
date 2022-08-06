@@ -95,10 +95,14 @@ services:
       CONNECT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_CONFIG_PROVIDERS: env
       CONNECT_CONFIG_PROVIDERS_ENV_CLASS: com.joe.kafka.connect.providers.EnvVariableProvider
-      hostname: postgres
-      user: postgres
-      password: password
-      dbname: postgres
+      postgres_hostname: postgres
+      postgres_user: postgres
+      postgres_password: password
+      postgres_dbname: postgres
+      mysql_hostname: mysql
+      mysql_user: root
+      mysql_dbname: root
+      mysql_password: password
 
   postgres:
     image: debezium/postgres:14-alpine
@@ -109,6 +113,18 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: password
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/entrypoint:/docker-entrypoint-initdb.d
+      - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: root
 
 # Uncomment these if you want to see UI
 #  schema-registry-ui:

@@ -1,4 +1,4 @@
-drop stream if exists user_detail_final delete topic;
+drop table if exists user_details_final delete topic;
 drop stream if exists user_detail_intermediate_stream;
 drop table if exists user_detail_table delete topic;
 drop stream if exists user_detail_stream;
