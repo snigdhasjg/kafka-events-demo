@@ -14,12 +14,15 @@ services:
     container_name: kafka
     depends_on:
       - zookeeper
+    ports:
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INT:PLAINTEXT,LISTENER_EXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INT
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INT://kafka:9092, LISTENER_EXT://localhost:29092
+      KAFKA_LISTENERS: LISTENER_INT://kafka:9092, LISTENER_EXT://0.0.0.0:29092
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -53,6 +56,8 @@ services:
     container_name: schema-registry
     depends_on:
       - kafka
+    ports:
+      - "8081:8081"
     healthcheck:
       test: curl -f http://schema-registry:8081
       interval: 60s
@@ -61,7 +66,6 @@ services:
       start_period: 30s
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: zookeeper:2181
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
 
   kafka-connect:
@@ -109,16 +113,12 @@ services:
     container_name: postgres
     volumes:
       - ./postgres/entrypoint/1_init.sql:/docker-entrypoint-initdb.d/1_init.sql
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: password
 
   mysql:
     image: mysql:5.7
     container_name: mysql
-    ports:
-      - "3306:3306"
     volumes:
       - ./mysql/entrypoint:/docker-entrypoint-initdb.d
       - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf

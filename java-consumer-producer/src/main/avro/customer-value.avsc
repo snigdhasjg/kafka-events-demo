@@ -1,0 +1,52 @@
+{
+  "type": "record",
+  "name": "Value",
+  "namespace": "mysql.root.customer",
+  "fields": [
+    {
+      "name": "id",
+      "type": "int"
+    },
+    {
+      "name": "username",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "name",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "email",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "phone_number",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "__deleted",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    }
+  ],
+  "connect.name": "mysql.root.customer.Value"
+}
