@@ -1,7 +1,7 @@
 {
   "type": "record",
   "name": "Value",
-  "namespace": "mysql.root.customer",
+  "namespace": "com.joe.kafka.customer",
   "fields": [
     {
       "name": "id",
@@ -40,6 +40,14 @@
       "default": null
     },
     {
+      "name": "country_iso",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
       "name": "__deleted",
       "type": [
         "null",
@@ -47,6 +55,5 @@
       ],
       "default": null
     }
-  ],
-  "connect.name": "mysql.root.customer.Value"
+  ]
 }

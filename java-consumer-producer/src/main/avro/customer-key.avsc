@@ -1,12 +1,11 @@
 {
   "type": "record",
   "name": "Key",
-  "namespace": "mysql.root.customer",
+  "namespace": "com.joe.kafka.customer",
   "fields": [
     {
       "name": "id",
       "type": "int"
     }
-  ],
-  "connect.name": "mysql.root.customer.Key"
+  ]
 }

@@ -1,8 +1,8 @@
-package com.joe.kafka.kafka.consumer;
+package com.joe.kafka.consumer;
 
+import com.joe.kafka.customer.Key;
+import com.joe.kafka.customer.Value;
 import lombok.extern.slf4j.Slf4j;
-import mysql.root.customer.Key;
-import mysql.root.customer.Value;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
