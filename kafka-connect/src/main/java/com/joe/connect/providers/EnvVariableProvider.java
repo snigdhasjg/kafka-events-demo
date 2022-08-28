@@ -1,4 +1,4 @@
-package com.joe.kafka.connect.providers;
+package com.joe.connect.providers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.config.ConfigData;

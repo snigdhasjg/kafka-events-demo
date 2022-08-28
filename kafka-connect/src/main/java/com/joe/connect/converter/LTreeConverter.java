@@ -1,4 +1,4 @@
-package com.joe.kafka.connect.converter;
+package com.joe.connect.converter;
 
 import io.debezium.spi.converter.CustomConverter;
 import io.debezium.spi.converter.RelationalColumn;

@@ -14,6 +14,7 @@ CREATE STREAM user_detail_stream (
     name         VARCHAR(STRING),
     email        VARCHAR(STRING),
     phone_number VARCHAR(STRING),
+    country_iso  VARCHAR(STRING),
     _created_at  BIGINT,
     _updated_at  BIGINT,
     __deleted    VARCHAR(STRING)
@@ -31,15 +32,49 @@ SELECT
     LATEST_BY_OFFSET(name, false) as name,
     LATEST_BY_OFFSET(email, false) as email,
     LATEST_BY_OFFSET(phone_number, false) as phone_number,
+    LATEST_BY_OFFSET(country_iso, false) as country_iso,
     LATEST_BY_OFFSET(__deleted, false)='true' as is_deleted
 FROM user_detail_stream
 GROUP BY rowkey->id;
+
+CREATE STREAM country_stream (
+    rowkey      STRUCT<iso_code VARCHAR(STRING)> key,
+    name        VARCHAR(STRING),
+    _created_at BIGINT,
+    _updated_at BIGINT,
+    __deleted   VARCHAR(STRING)
+) WITH (KAFKA_TOPIC='country', FORMAT='AVRO');
+
+CREATE TABLE country_table AS
+SELECT
+    rowkey -> iso_code as iso_code,
+    LATEST_BY_OFFSET(
+        case
+            when name='' then null
+            else name
+        end
+    ) as name,
+    LATEST_BY_OFFSET(__deleted, false)='true' as is_deleted
+FROM country_stream
+GROUP BY rowkey -> iso_code;
+
+CREATE TABLE user_detail_with_country_table AS
+SELECT udt.id,
+       udt.username,
+       udt.name,
+       udt.email,
+       udt.phone_number,
+       ct.name as country_name,
+       udt.is_deleted
+FROM user_detail_table udt
+         LEFT JOIN country_table ct on udt.country_iso = ct.iso_code and ct.is_deleted=false;
 
 CREATE STREAM user_detail_intermediate_stream (
     username     VARCHAR(STRING),
     name         VARCHAR(STRING),
     email        VARCHAR(STRING),
     phone_number VARCHAR(STRING),
+    country_name VARCHAR(STRING),
     is_deleted   BOOLEAN
 ) WITH (KAFKA_TOPIC='USER_DETAIL_TABLE', FORMAT='AVRO');
 
@@ -49,6 +84,7 @@ SELECT
     LATEST_BY_OFFSET(name, false) as name,
     LATEST_BY_OFFSET(email, false) as email,
     LATEST_BY_OFFSET(phone_number, false) as phone_number,
+    LATEST_BY_OFFSET(country_name, false) as country_name,
     LATEST_BY_OFFSET(is_deleted, false) as is_deleted
 FROM user_detail_intermediate_stream
 GROUP BY username;
@@ -58,6 +94,7 @@ CREATE STREAM user_detail_final_stream (
     name         VARCHAR(STRING),
     email        VARCHAR(STRING),
     phone_number VARCHAR(STRING),
+    country_name VARCHAR(STRING),
     is_deleted   BOOLEAN
 ) WITH (KAFKA_TOPIC='USER_DETAILS_PRE_FINAL', FORMAT='AVRO');
 
@@ -66,7 +103,8 @@ SELECT
     username,
     name,
     email,
-    phone_number
+    phone_number,
+    country_name
 FROM user_detail_final_stream
 WHERE is_deleted=false;
 

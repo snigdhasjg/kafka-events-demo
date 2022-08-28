@@ -1,1 +1,1 @@
-com.joe.kafka.connect.providers.EnvVariableProvider
+com.joe.connect.providers.EnvVariableProvider
