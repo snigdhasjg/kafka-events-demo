@@ -11,6 +11,7 @@ dependencies {
     implementation "io.debezium:debezium-connector-mysql:${debeziumVersion}"
 
     compileOnly "org.apache.kafka:connect-api:${confluentKafkaVersion}"
+    compileOnly "org.apache.kafka:connect-transforms:${confluentKafkaVersion}"
     compileOnly "org.slf4j:slf4j-api:${slf4jVersion}"
     compileOnly "org.slf4j:slf4j-simple:${slf4jVersion}"
 

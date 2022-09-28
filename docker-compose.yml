@@ -73,6 +73,8 @@ services:
     container_name: kafka-connect
     depends_on:
       - kafka
+    ports:
+      - "8000:8000"
     healthcheck:
       test: curl -f http://kafka-connect:8083
       interval: 60s
@@ -99,6 +101,9 @@ services:
       CONNECT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_CONFIG_PROVIDERS: env
       CONNECT_CONFIG_PROVIDERS_ENV_CLASS: com.joe.connect.providers.EnvVariableProvider
+      JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
+      CONNECT_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
+      KAFKA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
       postgres_hostname: postgres
       postgres_user: postgres
       postgres_password: password
