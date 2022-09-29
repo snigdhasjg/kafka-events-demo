@@ -13,7 +13,6 @@ import org.apache.kafka.connect.transforms.ReplaceField;
 import org.apache.kafka.connect.transforms.Transformation;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
@@ -43,7 +42,7 @@ public class BeforeAfterCompareFilter<R extends ConnectRecord<R>> implements Tra
             throw new ConnectException("Unable to validate config.");
         }
 
-        Map<String, String> delegateConfig = new LinkedHashMap<>();
+        Map<String, String> delegateConfig = new HashMap<>();
         delegateConfig.put("field", "before");
         beforeDelegate.configure(delegateConfig);
 
@@ -52,7 +51,7 @@ public class BeforeAfterCompareFilter<R extends ConnectRecord<R>> implements Tra
         afterDelegate.configure(delegateConfig);
 
         String excludeColumnList = config.getString(EXCLUDE_COLUMN_LIST);
-        hasExclusionFields = nonNull(excludeColumnList) && !"".equals(excludeColumnList);
+        hasExclusionFields = nonNull(excludeColumnList) && !excludeColumnList.isEmpty();
 
         delegateConfig = new HashMap<>();
         delegateConfig.put("exclude", excludeColumnList);
@@ -61,7 +60,7 @@ public class BeforeAfterCompareFilter<R extends ConnectRecord<R>> implements Tra
 
     @Override
     public R apply(final R record) {
-        if (!smtManager.isValidEnvelope(record)) {
+        if (record.value() == null || !smtManager.isValidEnvelope(record)) {
             log.warn("Not a debezium envelope");
             return record;
         }
@@ -78,6 +77,7 @@ public class BeforeAfterCompareFilter<R extends ConnectRecord<R>> implements Tra
         }
 
         if (beforeRecord.equals(afterRecord)) {
+            log.info("Skipping the record for topic: {} and key: {}", afterRecord.topic(), afterRecord.key());
             return null;
         }
         return record;
