@@ -54,7 +54,8 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
       KSQL_AUTO_OFFSET_RESET: "earliest"
       KSQL_KSQL_STREAMS_PROCESSING_GUARANTEE: "exactly_once"
-      KSQL_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
+      # For remote debugging
+      # KSQL_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.2.1
@@ -63,6 +64,7 @@ services:
       - kafka
     ports:
       - "8081:8081"
+      - "8002:8000"
     healthcheck:
       test: curl -f http://schema-registry:8081
       interval: 60s
@@ -72,6 +74,8 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
+      # For remote debugging
+      # JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
 
   kafka-connect:
     image: confluentinc/cp-kafka-connect:7.2.1
@@ -79,7 +83,7 @@ services:
     depends_on:
       - kafka
     ports:
-      - "8002:8000"
+      - "8003:8000"
     healthcheck:
       test: curl -f http://kafka-connect:8083
       interval: 60s
@@ -106,7 +110,8 @@ services:
       CONNECT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_CONFIG_PROVIDERS: env
       CONNECT_CONFIG_PROVIDERS_ENV_CLASS: com.joe.connect.providers.EnvVariableProvider
-      KAFKA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
+      # For remote debugging
+      # KAFKA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
       postgres_hostname: postgres
       postgres_user: postgres
       postgres_password: password
