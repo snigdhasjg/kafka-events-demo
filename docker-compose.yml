@@ -3,14 +3,14 @@
 version: '3.9'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.0.1
+    image: confluentinc/cp-zookeeper:7.2.1
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: confluentinc/cp-kafka:7.0.1
+    image: confluentinc/cp-kafka:7.2.1
     container_name: kafka
     depends_on:
       - zookeeper
@@ -40,6 +40,10 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./ksqldb/build/libs/ksqldb-all.jar:/usr/share/java/ksqldb-rest-app/ksqldb-all.jar
     environment:
       KSQL_LISTENERS: http://0.0.0.0:8088
       KSQL_KSQL_ADVERTISED_LISTENER: http://ksqldb-server:8088
@@ -50,9 +54,10 @@ services:
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
       KSQL_AUTO_OFFSET_RESET: "earliest"
       KSQL_KSQL_STREAMS_PROCESSING_GUARANTEE: "exactly_once"
+      KSQL_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.0.1
+    image: confluentinc/cp-schema-registry:7.2.1
     container_name: schema-registry
     depends_on:
       - kafka
@@ -69,12 +74,12 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
 
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:7.0.1
+    image: confluentinc/cp-kafka-connect:7.2.1
     container_name: kafka-connect
     depends_on:
       - kafka
     ports:
-      - "8000:8000"
+      - "8002:8000"
     healthcheck:
       test: curl -f http://kafka-connect:8083
       interval: 60s
@@ -101,8 +106,6 @@ services:
       CONNECT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_CONFIG_PROVIDERS: env
       CONNECT_CONFIG_PROVIDERS_ENV_CLASS: com.joe.connect.providers.EnvVariableProvider
-      JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
-      CONNECT_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
       KAFKA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
       postgres_hostname: postgres
       postgres_user: postgres
