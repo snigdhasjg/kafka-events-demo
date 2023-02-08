@@ -9,17 +9,17 @@ plugins {
 group 'com.joe.kafka.java-consumer-producer'
 
 dependencies {
-    implementation "org.springframework.kafka:spring-kafka:${springKafkaVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-validation:${springBootVersion}"
+    implementation "org.springframework.kafka:spring-kafka"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "io.confluent:kafka-avro-serializer:${confluentAvroKafkaVersion}"
     implementation "org.apache.avro:avro:${avroVersion}"
     implementation "ch.qos.logback:logback-classic:${logbackVersion}"
 
-    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor:${springBootVersion}"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
 test {

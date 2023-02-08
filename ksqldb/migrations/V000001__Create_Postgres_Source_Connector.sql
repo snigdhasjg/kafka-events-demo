@@ -28,13 +28,16 @@ CREATE SOURCE CONNECTOR POSTGRES_SOURCE_CONNECTOR WITH(
     'value.converter.enhanced.avro.schema.support'=true,
     'value.converter.schema.registry.url'='${env:<ignore>:CONNECT_SCHEMA_REGISTRY_URL}',
 
-    'transforms'='route,unwrap',
+    'transforms'='route,unwrap,schema',
     'transforms.route.type'='org.apache.kafka.connect.transforms.RegexRouter',
     'transforms.route.regex'='([^.]+)\.([^.]+)\.([^.]+)',
     'transforms.route.replacement'='$3',
     'transforms.unwrap.type'='io.debezium.transforms.ExtractNewRecordState',
     'transforms.unwrap.drop.tombstones'=false,
     'transforms.unwrap.delete.handling.mode'='rewrite',
+    'transforms.schema.type'='com.joe.connect.transformer.SchemaNameRegexRouter',
+    'transforms.schema.regex'='([^.]+)\.([^.]+)\.([^.]+)\.([^.]+)',
+    'transforms.schema.replacement'='com.deere.product.$3.$4',
     'tombstones.on.delete'=false,
 
     'topic.creation.default.cleanup.policy'='compact',
