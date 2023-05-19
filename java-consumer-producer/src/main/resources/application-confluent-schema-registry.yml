@@ -1,0 +1,21 @@
+spring:
+  kafka:
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      auto-offset-reset: earliest
+      group-id: "kafka-consumer-app"
+      properties:
+        schema.registry.url: "${SCHEMA_REGISTRY_URL:http://localhost:8081}"
+        allow.auto.create.topics: false
+        specific.avro.reader: true
+        use.latest.version: true
+        spring.deserializer.key.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
+        spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
+    producer:
+      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        schema.registry.url: "${SCHEMA_REGISTRY_URL:http://localhost:8081}"
+      acks: all
+      client-id: "kafka-producer-app"

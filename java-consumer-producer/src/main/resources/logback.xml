@@ -1,0 +1,10 @@
+<configuration>
+    <appender name="plainTextAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} %yellow(%-5level) - %magenta(%c{1}.%M:%L): %m%n%throwable</pattern>
+        </encoder>
+    </appender>
+    <root level="info">
+        <appender-ref ref="plainTextAppender"/>
+    </root>
+</configuration>

@@ -1,23 +1,8 @@
 spring:
+  profiles:
+    default: aws-glue
   application:
     name: "kafka-consumer-producer"
   kafka:
     bootstrap-servers:
       - "${BOOTSTRAP_SERVERS:localhost:29092}"
-    consumer:
-      key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      auto-offset-reset: earliest
-      group-id: "kafka-consumer-app"
-      properties:
-        schema.registry.url: "${SCHEMA_REGISTRY_URL:http://localhost:8081}"
-        allow.auto.create.topics: false
-        specific.avro.reader: true
-        use.latest.version: true
-    producer:
-      key-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-      properties:
-        schema.registry.url: "${SCHEMA_REGISTRY_URL:http://localhost:8081}"
-      acks: all
-      client-id: "kafka-producer-app"

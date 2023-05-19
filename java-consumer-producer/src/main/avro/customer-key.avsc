@@ -5,7 +5,10 @@
   "fields": [
     {
       "name": "id",
-      "type": "int"
+      "type": {
+        "type" : "string",
+        "logicalType" : "uuid"
+      }
     }
   ]
 }

@@ -4,10 +4,6 @@
   "namespace": "com.joe.kafka.customer",
   "fields": [
     {
-      "name": "id",
-      "type": "int"
-    },
-    {
       "name": "username",
       "type": [
         "null",
@@ -51,7 +47,7 @@
       "name": "__deleted",
       "type": [
         "null",
-        "string"
+        "boolean"
       ],
       "default": null
     }

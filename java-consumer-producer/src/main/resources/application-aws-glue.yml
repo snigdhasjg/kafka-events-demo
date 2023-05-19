@@ -1,0 +1,34 @@
+spring:
+  kafka:
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      auto-offset-reset: earliest
+      group-id: "kafka-consumer-app"
+      properties:
+        region: ap-south-1
+        registry.name: joe-kafka-schema-registry
+        schemaAutoRegistrationEnabled: true
+        avroRecordType: GENERIC_RECORD
+        schemaNameGenerationClass: com.joe.kafka.config.aws.glue.KafkaAvroNamingStrategy
+        spring.deserializer.key.delegate.class: com.amazonaws.services.schemaregistry.deserializers.avro.AWSKafkaAvroDeserializer
+        spring.deserializer.value.delegate.class: com.amazonaws.services.schemaregistry.deserializers.avro.AWSKafkaAvroDeserializer
+    producer:
+      acks: all
+      client-id: "kafka-producer-app"
+      properties:
+        region: ap-south-1
+        registry.name: joe-kafka-schema-registry
+        schemaAutoRegistrationEnabled: true
+        avroRecordType: GENERIC_RECORD
+        schemaNameGenerationClass: com.joe.kafka.config.aws.glue.KafkaAvroNamingStrategy
+#    properties:
+#      security.protocol: SASL_SSL
+#      sasl:
+#        mechanism: AWS_MSK_IAM
+#        jaas.config: software.amazon.msk.auth.iam.IAMLoginModule required;
+#        client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+
+aws:
+  auth:
+    profile: tw-beach

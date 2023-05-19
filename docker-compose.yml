@@ -3,14 +3,14 @@
 version: '3.9'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.2.1
+    image: confluentinc/cp-zookeeper:7.3.0
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: confluentinc/cp-kafka:7.2.1
+    image: confluentinc/cp-kafka:7.3.0
     container_name: kafka
     depends_on:
       - zookeeper
@@ -30,10 +30,11 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
 
   ksqldb-server:
-    image: confluentinc/ksqldb-server:0.27.1
+    image: confluentinc/cp-ksqldb-server:7.3.0
     container_name: ksqldb-server
     depends_on:
       - kafka
+      - schema-registry
     healthcheck:
       test: ps -eo stat,command | grep java | grep ksql | awk '{print $$1;}' | grep -E '^S(s?)l$$' # two '$' sign needed to ignore one
       interval: 60s
@@ -58,7 +59,7 @@ services:
       # KSQL_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:7.2.1
+    image: confluentinc/cp-schema-registry:7.3.0
     container_name: schema-registry
     depends_on:
       - kafka
@@ -78,10 +79,11 @@ services:
       # JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000
 
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:7.2.1
+    image: confluentinc/cp-kafka-connect:7.3.0
     container_name: kafka-connect
     depends_on:
       - kafka
+      - schema-registry
     ports:
       - "8003:8000"
     healthcheck:
@@ -129,16 +131,16 @@ services:
     environment:
       POSTGRES_PASSWORD: password
 
-  mysql:
-    image: mysql:5.7
-    container_name: mysql
-    volumes:
-      - ./mysql/entrypoint:/docker-entrypoint-initdb.d
-      - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: root
-
+#  mysql:
+#    image: mysql:5.7
+#    container_name: mysql
+#    volumes:
+#      - ./mysql/entrypoint:/docker-entrypoint-initdb.d
+#      - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+#    environment:
+#      MYSQL_ROOT_PASSWORD: password
+#      MYSQL_DATABASE: root
+#
 # Uncomment these if you want to see UI
 #  schema-registry-ui:
 #    image: landoop/schema-registry-ui:0.9.4
