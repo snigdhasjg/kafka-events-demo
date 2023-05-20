@@ -1,6 +1,6 @@
 spring:
   profiles:
-    default: aws-glue
+    default: rabbit-mq
   application:
     name: "consumer-producer"
   kafka:

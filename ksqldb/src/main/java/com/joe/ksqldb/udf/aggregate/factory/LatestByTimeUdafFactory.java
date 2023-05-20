@@ -4,7 +4,6 @@ import com.joe.ksqldb.udf.aggregate.LatestByTimeUdaf;
 import io.confluent.ksql.function.udaf.Udaf;
 import io.confluent.ksql.function.udaf.UdafDescription;
 import io.confluent.ksql.function.udaf.UdafFactory;
-import org.apache.kafka.connect.data.Struct;
 
 @UdafDescription(
         name = "LATEST_BY_TIME",

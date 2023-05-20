@@ -9,7 +9,7 @@ spring:
         region: ap-south-1
         registry.name: joe-kafka-schema-registry
         schemaAutoRegistrationEnabled: true
-        avroRecordType: GENERIC_RECORD
+        avroRecordType: SPECIFIC_RECORD
         schemaNameGenerationClass: com.joe.kafka.config.aws.glue.KafkaAvroNamingStrategy
         spring.deserializer.key.delegate.class: com.amazonaws.services.schemaregistry.deserializers.avro.AWSKafkaAvroDeserializer
         spring.deserializer.value.delegate.class: com.amazonaws.services.schemaregistry.deserializers.avro.AWSKafkaAvroDeserializer
@@ -20,7 +20,7 @@ spring:
         region: ap-south-1
         registry.name: joe-kafka-schema-registry
         schemaAutoRegistrationEnabled: true
-        avroRecordType: GENERIC_RECORD
+        avroRecordType: SPECIFIC_RECORD
         schemaNameGenerationClass: com.joe.kafka.config.aws.glue.KafkaAvroNamingStrategy
 #    properties:
 #      security.protocol: SASL_SSL

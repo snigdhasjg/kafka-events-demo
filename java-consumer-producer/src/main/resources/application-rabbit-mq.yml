@@ -3,3 +3,13 @@ rabbitmq:
     name: "customer"
   exchange: "customer-exchange"
   routing-key: "customer-key"
+  schema-properties:
+    schemaName: ${rabbitmq.queue.name}
+    region: ap-south-1
+    registry.name: joe-kafka-schema-registry
+    schemaAutoRegistrationEnabled: true
+    avroRecordType: SPECIFIC_RECORD
+
+aws:
+  auth:
+    profile: tw-beach

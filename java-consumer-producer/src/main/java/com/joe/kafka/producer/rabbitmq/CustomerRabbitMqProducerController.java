@@ -1,6 +1,6 @@
 package com.joe.kafka.producer.rabbitmq;
 
-import com.joe.kafka.model.Customer;
+import com.joe.kafka.customer.Value;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,7 +34,7 @@ public class CustomerRabbitMqProducerController {
      }
      */
     @PostMapping("/rabbitmq")
-    public void sendMessage(@RequestBody Customer customer) {
+    public void sendMessage(@RequestBody Value customer) {
         log.info("Message sent {}", customer);
         rabbitTemplate.convertAndSend(exchange, routingKey, customer);
     }
