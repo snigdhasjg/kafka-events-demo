@@ -131,6 +131,16 @@ services:
     environment:
       POSTGRES_PASSWORD: password
 
+  rabbit-mq:
+    image: rabbitmq:3.11.16-management-alpine
+    container_name: rabbit-mq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+
 #  mysql:
 #    image: mysql:5.7
 #    container_name: mysql

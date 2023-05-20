@@ -1,4 +1,4 @@
-package com.joe.kafka.producer;
+package com.joe.kafka.producer.kafka;
 
 import com.joe.kafka.customer.Key;
 import com.joe.kafka.customer.Value;
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @Profile("aws-glue")
-public class CustomerProducerController {
+public class CustomerKafkaProducerController {
 
     private final KafkaTemplate<Key, Value> kafkaTemplate;
 
@@ -32,6 +32,8 @@ public class CustomerProducerController {
      */
     @PostMapping("/kafka")
     public void produce(@RequestBody Value customerValue) {
-        kafkaTemplate.send("customer", new Key(UUID.randomUUID().toString()), customerValue);
+        Key customerKey = new Key(UUID.randomUUID().toString());
+        log.info("Message sent key: {}, value: {}", customerKey, customerValue);
+        kafkaTemplate.send("customer", customerKey, customerValue);
     }
 }

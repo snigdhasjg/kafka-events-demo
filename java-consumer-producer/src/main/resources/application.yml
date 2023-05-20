@@ -2,7 +2,12 @@ spring:
   profiles:
     default: aws-glue
   application:
-    name: "kafka-consumer-producer"
+    name: "consumer-producer"
   kafka:
     bootstrap-servers:
       - "${BOOTSTRAP_SERVERS:localhost:29092}"
+  rabbitmq:
+    host: localhost
+    username: user
+    password: password
+    port: 5672

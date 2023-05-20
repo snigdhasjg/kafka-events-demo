@@ -1,0 +1,5 @@
+rabbitmq:
+  queue:
+    name: "customer"
+  exchange: "customer-exchange"
+  routing-key: "customer-key"

@@ -1,4 +1,4 @@
-package com.joe.kafka.config.aws.glue;
+package com.joe.kafka.config.kafka.glue;
 
 import com.amazonaws.services.schemaregistry.serializers.avro.AWSKafkaAvroSerializer;
 import lombok.AllArgsConstructor;
