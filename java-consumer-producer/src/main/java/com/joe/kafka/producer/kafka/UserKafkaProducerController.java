@@ -26,11 +26,11 @@ public class UserKafkaProducerController {
     /**
      {
          "username": "ram",
-         "name": "Ram Pal",
-         "email": "ram@pal.in",
-         "phone_number": "+919876543210",
-         "country_iso": "IN",
-         "__deleted": false
+         "name": "Ram Ghosh",
+         "email": "ram@ghosh.in",
+         "phoneNumber": "+919876543210",
+         "countryIso": "IN",
+         "deleted": false
      }
      */
     @PostMapping("/kafka")

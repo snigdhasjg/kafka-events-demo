@@ -15,11 +15,11 @@ import org.springframework.context.annotation.Profile;
 @RequiredArgsConstructor
 public class UserQueueConfiguration {
 
-    @Value("${rabbitmq.queue.user.name}")
+    @Value("${rabbitmq.producer-queue.user.name}")
     private final String queueName;
-    @Value("${rabbitmq.queue.user.exchange}")
+    @Value("${rabbitmq.producer-queue.user.exchange}")
     private final String exchange;
-    @Value("${rabbitmq.queue.user.routing-key}")
+    @Value("${rabbitmq.producer-queue.user.routing-key}")
     private final String routingKey;
 
     @Bean

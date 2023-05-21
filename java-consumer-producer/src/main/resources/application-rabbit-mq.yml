@@ -6,9 +6,14 @@ spring:
     port: 5672
 
 rabbitmq:
-  queue:
+  producer-queue:
     user:
-      name: "user"
+      name: "user-producer-queue"
+      exchange: "user.exchange"
+      routing-key: "user.key"
+  consumer-queue:
+    user:
+      name: "user-consumer-queue"
       exchange: "user.exchange"
       routing-key: "user.key"
   properties:
@@ -17,9 +22,13 @@ rabbitmq:
     schemaAutoRegistrationEnabled: true
     avroRecordType: SPECIFIC_RECORD
     userAgentApp: rabbitmq
+    compatibility: FULL_ALL
+    description:
     tags:
-      component: java-consumer-producer-service
+      component: java-consumer-producer
       environment: sandbox
+    metadata:
+      service: java-consumer-producer-service
 
 aws:
   auth:

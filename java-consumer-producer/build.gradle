@@ -6,29 +6,41 @@ plugins {
     id 'com.github.davidmc24.gradle.plugin.avro' version "${avroPluginVersion}"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 group 'com.joe.kafka.java-consumer-producer'
+
+dependencyManagement {
+    imports {
+        mavenBom "software.amazon.glue:schema-registry-parent:${awsGlueDependencyVersion}"
+    }
+}
 
 dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-validation"
     implementation "ch.qos.logback:logback-classic"
+    implementation("software.amazon.awssdk:sso") {
+        exclude group: 'software.amazon.awssdk', module: 'apache-client'
+    }
 
     // For kafka
     implementation "org.springframework.kafka:spring-kafka"
-    // For confluent schema registry
     implementation "io.confluent:kafka-avro-serializer:${confluentAvroKafkaVersion}"
-    // For aws glue schema registry
-    implementation platform("software.amazon.glue:schema-registry-parent:${awsGlueDependencyVersion}")
     implementation("software.amazon.glue:schema-registry-kafkastreams-serde:${awsGlueDependencyVersion}") {
-        exclude group: 'software.amazon.awssdk', module: 'apache-client'
-    }
-    implementation("software.amazon.awssdk:sso") {
         exclude group: 'software.amazon.awssdk', module: 'apache-client'
     }
 
     // For rabbit mq
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation("software.amazon.glue:schema-registry-serde:${awsGlueDependencyVersion}") {
+        exclude group: 'software.amazon.awssdk', module: 'apache-client'
+    }
 
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 

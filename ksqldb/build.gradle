@@ -6,6 +6,12 @@ plugins {
 
 group 'com.joe.ksqldb'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 dependencies {
     compileOnly "io.confluent.ksql:ksqldb-udf:${ksqldbUdfVersion}"
     compileOnly "io.confluent.ksql:ksqldb-common:${ksqldbUdfVersion}"

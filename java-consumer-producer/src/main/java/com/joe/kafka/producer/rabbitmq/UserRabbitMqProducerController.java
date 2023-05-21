@@ -1,9 +1,7 @@
 package com.joe.kafka.producer.rabbitmq;
 
 import com.joe.kafka.customer.UserValue;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,20 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 @Profile("rabbit-mq")
 public class UserRabbitMqProducerController {
-    @Value("${rabbitmq.queue.user.exchange}")
+    @Value("${rabbitmq.producer-queue.user.exchange}")
     private final String exchange;
-    @Value("${rabbitmq.queue.user.routing-key}")
+    @Value("${rabbitmq.producer-queue.user.routing-key}")
     private final String routingKey;
     private final RabbitTemplate rabbitTemplate;
 
     /**
      {
          "username": "ram",
-         "name": "Ram Pal",
-         "email": "ram@pal.in",
-         "phone_number": "+919876543210",
-         "country_iso": "IN",
-         "__deleted": false
+         "name": "Ram Ghosh",
+         "email": "ram@ghosh.in",
+         "phoneNumber": "+919876543210",
+         "countryIso": "IN",
+         "deleted": false
      }
      */
     @PostMapping("/rabbitmq")

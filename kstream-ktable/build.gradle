@@ -6,6 +6,12 @@ plugins {
 
 group 'com.joe.kafka.kstream-ktable'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
 dependencies {
     implementation "io.confluent:kafka-streams-avro-serde:${confluentAvroKafkaVersion}"
     implementation "org.apache.avro:avro:${avroVersion}"

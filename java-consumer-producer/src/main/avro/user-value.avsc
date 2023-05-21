@@ -44,7 +44,7 @@
       "default": null
     },
     {
-      "name": "__deleted",
+      "name": "deleted",
       "type": [
         "null",
         "boolean"
