@@ -1,5 +1,7 @@
 spring:
   kafka:
+    bootstrap-servers:
+      - "${BOOTSTRAP_SERVERS:localhost:29092}"
     consumer:
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
@@ -19,3 +21,7 @@ spring:
         schema.registry.url: "${SCHEMA_REGISTRY_URL:http://localhost:8081}"
       acks: all
       client-id: "kafka-producer-app"
+
+kafka:
+  topic:
+    name: "user"

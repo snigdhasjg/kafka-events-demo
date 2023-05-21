@@ -4,8 +4,9 @@ import com.amazonaws.services.schemaregistry.common.AWSDeserializerInput;
 import com.amazonaws.services.schemaregistry.common.AWSSerializerInput;
 import com.amazonaws.services.schemaregistry.common.configs.GlueSchemaRegistryConfiguration;
 import com.amazonaws.services.schemaregistry.deserializers.GlueSchemaRegistryDeserializationFacade;
+import com.amazonaws.services.schemaregistry.exception.AWSSchemaRegistryException;
 import com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistrySerializationFacade;
-import com.amazonaws.services.schemaregistry.utils.GlueSchemaRegistryUtils;
+import org.apache.avro.generic.GenericContainer;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -23,13 +24,13 @@ import java.util.stream.Collectors;
 public class RabbitMqGlueAvroSerializer extends AbstractMessageConverter {
     private final GlueSchemaRegistrySerializationFacade serializationFacade;
     private final GlueSchemaRegistryDeserializationFacade deserializationFacade;
-    private final String schemaName;
+    private final String registryName;
+    private final String awsRegion;
 
-    public RabbitMqGlueAvroSerializer(AwsCredentialsProvider awsCredentialsProvider, Properties properties) {
-        Map<String, ?> configs = getMapFromPropertiesFile(properties);
-        this.schemaName = GlueSchemaRegistryUtils.getInstance().getSchemaName(configs);
+    public RabbitMqGlueAvroSerializer(AwsCredentialsProvider awsCredentialsProvider, Map<String, ?> configs) {
         GlueSchemaRegistryConfiguration glueSchemaRegistryConfiguration = new GlueSchemaRegistryConfiguration(configs);
-        glueSchemaRegistryConfiguration.setUserAgentApp("rabbitmq");
+        this.registryName = glueSchemaRegistryConfiguration.getRegistryName();
+        this.awsRegion = glueSchemaRegistryConfiguration.getRegion();
 
         this.serializationFacade = GlueSchemaRegistrySerializationFacade.builder()
                 .credentialProvider(awsCredentialsProvider)
@@ -41,12 +42,21 @@ public class RabbitMqGlueAvroSerializer extends AbstractMessageConverter {
     @NotNull
     @Override
     protected Message createMessage(@NotNull Object data, @NotNull MessageProperties messageProperties) {
+        String schemaName;
+        if (data instanceof GenericContainer avroContainer) {
+            schemaName = avroContainer.getSchema().getFullName();
+        } else {
+            throw new AWSSchemaRegistryException(String.format("Unsupported type passed for serialization: %s", data));
+        }
         AWSSerializerInput awsSerializerInput = AWSSerializerInput.builder()
                 .dataFormat(DataFormat.AVRO.toString())
                 .transportName(schemaName)
                 .schemaName(schemaName)
                 .schemaDefinition(serializationFacade.getSchemaDefinition(DataFormat.AVRO, data))
                 .build();
+        messageProperties.setHeader("schema-name", schemaName);
+        messageProperties.setHeader("registry-name", registryName);
+        messageProperties.setHeader("aws-region", awsRegion);
         UUID schemaVersionIdFromRegistry = serializationFacade.getOrRegisterSchemaVersion(awsSerializerInput);
         byte[] body = serializationFacade.serialize(DataFormat.AVRO, data, schemaVersionIdFromRegistry);
         return new Message(body, messageProperties);
@@ -57,7 +67,6 @@ public class RabbitMqGlueAvroSerializer extends AbstractMessageConverter {
     public Object fromMessage(@NotNull Message message) throws MessageConversionException {
         byte[] data = message.getBody();
         AWSDeserializerInput awsDeserializerInput = AWSDeserializerInput.builder()
-                .transportName(schemaName)
                 .buffer(ByteBuffer.wrap(data))
                 .build();
         return deserializationFacade.deserialize(awsDeserializerInput);

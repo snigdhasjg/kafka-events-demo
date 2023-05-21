@@ -1,5 +1,7 @@
 spring:
   kafka:
+    bootstrap-servers:
+      - "${BOOTSTRAP_SERVERS:localhost:29092}"
     consumer:
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
@@ -28,6 +30,10 @@ spring:
 #        mechanism: AWS_MSK_IAM
 #        jaas.config: software.amazon.msk.auth.iam.IAMLoginModule required;
 #        client.callback.handler.class: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+
+kafka:
+  topic:
+    name: "user"
 
 aws:
   auth:

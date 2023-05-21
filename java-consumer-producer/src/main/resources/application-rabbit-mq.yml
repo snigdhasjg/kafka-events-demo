@@ -1,14 +1,25 @@
+spring:
+  rabbitmq:
+    host: localhost
+    username: user
+    password: password
+    port: 5672
+
 rabbitmq:
   queue:
-    name: "customer"
-  exchange: "customer-exchange"
-  routing-key: "customer-key"
-  schema-properties:
-    schemaName: ${rabbitmq.queue.name}
+    user:
+      name: "user"
+      exchange: "user.exchange"
+      routing-key: "user.key"
+  properties:
     region: ap-south-1
-    registry.name: joe-kafka-schema-registry
+    "[registry.name]": joe-kafka-schema-registry
     schemaAutoRegistrationEnabled: true
     avroRecordType: SPECIFIC_RECORD
+    userAgentApp: rabbitmq
+    tags:
+      component: java-consumer-producer-service
+      environment: sandbox
 
 aws:
   auth:

@@ -3,11 +3,3 @@ spring:
     default: rabbit-mq
   application:
     name: "consumer-producer"
-  kafka:
-    bootstrap-servers:
-      - "${BOOTSTRAP_SERVERS:localhost:29092}"
-  rabbitmq:
-    host: localhost
-    username: user
-    password: password
-    port: 5672

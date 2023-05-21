@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "Key",
+  "name": "UserKey",
   "namespace": "com.joe.kafka.customer",
   "fields": [
     {
