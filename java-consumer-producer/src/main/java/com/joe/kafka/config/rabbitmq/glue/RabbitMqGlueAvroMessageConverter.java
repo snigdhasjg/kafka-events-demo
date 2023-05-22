@@ -14,23 +14,25 @@ import org.springframework.amqp.support.converter.AbstractMessageConverter;
 import org.springframework.amqp.support.converter.MessageConversionException;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.services.glue.GlueClient;
 import software.amazon.awssdk.services.glue.model.DataFormat;
+import software.amazon.awssdk.services.glue.model.GetSchemaVersionRequest;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.UUID;
 
-public class RabbitMqGlueAvroSerializer extends AbstractMessageConverter {
+public class RabbitMqGlueAvroMessageConverter extends AbstractMessageConverter {
     private final GlueSchemaRegistrySerializationFacade serializationFacade;
     private final GlueSchemaRegistryDeserializationFacade deserializationFacade;
     private final String registryName;
     private final String awsRegion;
 
-    public RabbitMqGlueAvroSerializer(Map<String, ?> configs) {
+    public RabbitMqGlueAvroMessageConverter(Map<String, ?> configs) {
         this(DefaultCredentialsProvider.create(), configs);
     }
 
-    public RabbitMqGlueAvroSerializer(AwsCredentialsProvider awsCredentialsProvider, Map<String, ?> configs) {
+    public RabbitMqGlueAvroMessageConverter(AwsCredentialsProvider awsCredentialsProvider, Map<String, ?> configs) {
         super.setCreateMessageIds(true);
         GlueSchemaRegistryConfiguration glueSchemaRegistryConfiguration = new GlueSchemaRegistryConfiguration(configs);
         this.registryName = glueSchemaRegistryConfiguration.getRegistryName();

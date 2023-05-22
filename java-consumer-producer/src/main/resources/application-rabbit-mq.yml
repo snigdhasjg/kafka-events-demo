@@ -4,6 +4,10 @@ spring:
     username: user
     password: password
     port: 5672
+  cloud:
+    schema:
+      avro:
+        dynamic-schema-generation-enabled: true
 
 rabbitmq:
   producer-queue:
@@ -18,7 +22,8 @@ rabbitmq:
       routing-key: "user.key"
   properties:
     region: ap-south-1
-    "[registry.name]": joe-kafka-schema-registry
+    "[registry.name]": joe-kafka-schema-registry-spring
+    registryName: joe-kafka-schema-registry-spring
     schemaAutoRegistrationEnabled: true
     avroRecordType: SPECIFIC_RECORD
     userAgentApp: rabbitmq

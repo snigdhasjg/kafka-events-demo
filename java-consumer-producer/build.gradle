@@ -17,6 +17,7 @@ group 'com.joe.kafka.java-consumer-producer'
 dependencyManagement {
     imports {
         mavenBom "software.amazon.glue:schema-registry-parent:${awsGlueDependencyVersion}"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 
@@ -37,6 +38,7 @@ dependencies {
     }
 
     // For rabbit mq
+    implementation 'org.springframework.cloud:spring-cloud-stream-schema-registry-client'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation("software.amazon.glue:schema-registry-serde:${awsGlueDependencyVersion}") {
         exclude group: 'software.amazon.awssdk', module: 'apache-client'
